@@ -1,0 +1,17 @@
+# Roblox builds and artifacts
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+*.rbxl.lock
+*.rbxlx.lock
+
+# LuaCov reports
+/luacov.*
+
+# Docs build
+/site
+
+# Lua packages
+/lemur*
+/ldoc*
