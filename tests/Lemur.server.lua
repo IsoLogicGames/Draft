@@ -13,7 +13,7 @@ local Habitat = Lemur.Habitat.new()
 
 --- The source locations to load in lemur
 local Source = { -- This can potentially be loaded from a project.json
-	{ "lib", "ReplicatedStorage.Monolith" },
+	{ "lib", "ReplicatedStorage.Draft" },
 	{ "tests", "ReplicatedStorage.Tests" },
 	{ "modules/testez/src", "ReplicatedStorage.Tests.TestEZ" },
 }
