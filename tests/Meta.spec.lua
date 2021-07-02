@@ -34,7 +34,7 @@ return function()
 			table.insert(A.__meta.__class.interface, "Test")
 			local B = proxy("B")
 			B.__meta.__index = Meta.__index
-			table.insert(A.__meta.__class.implementing, A)
+			table.insert(B.__meta.__class.implementing, A)
 			expect(function()
 				B:Test()
 			end).to.throw("Abstract method 'Test' of 'A' must be overridden in the first concrete subclass. Called directly from 'B'.")
@@ -46,20 +46,19 @@ return function()
 			table.insert(A.__meta.__class.interface, "Test")
 			local B = proxy("B")
 			B.__meta.__index = Meta.__index
-			table.insert(A.__meta.__class.implementing, A)
+			table.insert(B.__meta.__class.implementing, A)
 			local C = proxy("C")
 			C.__meta.__index = Meta.__index
-			table.insert(A.__meta.__class.implementing, B)
+			table.insert(C.__meta.__class.implementing, B)
 			expect(function()
 				C:Test()
 			end).to.throw("Abstract method 'Test' of 'A' must be overridden in the first concrete subclass. Called directly from 'C'.")
 		end)
 
-		it("should error when a method that doesn't exist is called", function()
+		it("should return nil when a member doesn't exist", function()
 			local A = proxy("A")
-			expect(function()
-				A:Test()
-			end).to.throw("No member 'Test' exists in 'A'.")
+			A.__meta.__index = Meta.__index
+			expect(A.Test).never.to.be.ok()
 		end)
 
 		it("should call the method of a parent", function()
@@ -145,8 +144,8 @@ return function()
 				A:interface("Test3")
 				expect(#A.__meta.__class.interface).to.equal(3)
 				expect(A.__meta.__class.interface[1]).to.equal("Test1")
-				expect(A.__meta.__class.interface[1]).to.equal("Test2")
-				expect(A.__meta.__class.interface[1]).to.equal("Test3")
+				expect(A.__meta.__class.interface[2]).to.equal("Test2")
+				expect(A.__meta.__class.interface[3]).to.equal("Test3")
 			end)
 
 			it("should allow adding multiple interfaces at once", function()
@@ -155,8 +154,8 @@ return function()
 				A:interface("Test1", "Test2", "Test3")
 				expect(#A.__meta.__class.interface).to.equal(3)
 				expect(A.__meta.__class.interface[1]).to.equal("Test1")
-				expect(A.__meta.__class.interface[1]).to.equal("Test2")
-				expect(A.__meta.__class.interface[1]).to.equal("Test3")
+				expect(A.__meta.__class.interface[2]).to.equal("Test2")
+				expect(A.__meta.__class.interface[3]).to.equal("Test3")
 			end)
 		end)
 	end)
@@ -168,6 +167,7 @@ return function()
 			A.__meta.__tostring = Meta.__tostring
 			function A:ToString()
 				called = true
+				return ""
 			end
 			expect(called).to.equal(false)
 			tostring(A)
@@ -178,7 +178,9 @@ return function()
 			local A = proxy("A")
 			A.__meta.__tostring = Meta.__tostring
 			function A:ToString()
+				self.__meta.__tostring = nil
 				expect(self).to.equal(A)
+				return ""
 			end
 			tostring(A)
 		end)
@@ -543,11 +545,15 @@ return function()
 			local A = proxy("A")
 			local called = false
 			A.__meta.__eq = Meta.__eq
+			local B = proxy("B")
+			B.__meta.__eq = Meta.__eq
+
 			function A:operatorEq()
 				called = true
 			end
+
 			expect(called).to.equal(false)
-			A = A == A
+			A = A == B
 			expect(called).to.equal(true)
 		end)
 
@@ -556,10 +562,14 @@ return function()
 			A.__meta.__eq = Meta.__eq
 			local B = proxy("B")
 			B.__meta.__eq = Meta.__eq
+
 			function A:operatorEq(other)
+				self.__meta.__eq = nil
+				other.__meta.__eq = nil
 				expect(self).to.equal(A)
 				expect(other).to.equal(B)
 			end
+
 			B.operatorEq = A.operatorEq
 			A = A == B
 		end)
@@ -569,10 +579,14 @@ return function()
 			A.__meta.__eq = Meta.__eq
 			local B = proxy("B")
 			B.__meta.__eq = Meta.__eq
+
 			function A:operatorEq(other)
+				self.__meta.__eq = nil
+				other.__meta.__eq = nil
 				expect(self).to.equal(B)
 				expect(other).to.equal(A)
 			end
+
 			B.operatorEq = A.operatorEq
 			A = B == A
 		end)
@@ -583,11 +597,15 @@ return function()
 			local A = proxy("A")
 			local called = false
 			A.__meta.__lt = Meta.__lt
+			local B = proxy("B")
+			B.__meta.__lt = Meta.__lt
+
 			function A:operatorLT()
 				called = true
 			end
+
 			expect(called).to.equal(false)
-			A = A < A
+			A = A < B
 			expect(called).to.equal(true)
 		end)
 
@@ -596,10 +614,12 @@ return function()
 			A.__meta.__lt = Meta.__lt
 			local B = proxy("B")
 			B.__meta.__lt = Meta.__lt
+
 			function A:operatorLT(other)
 				expect(self).to.equal(A)
 				expect(other).to.equal(B)
 			end
+
 			B.operatorLT = A.operatorLT
 			A = A < B
 		end)
@@ -609,10 +629,12 @@ return function()
 			A.__meta.__lt = Meta.__lt
 			local B = proxy("B")
 			B.__meta.__lt = Meta.__lt
+
 			function A:operatorLT(other)
 				expect(self).to.equal(B)
 				expect(other).to.equal(A)
 			end
+
 			B.operatorLT = A.operatorLT
 			A = B < A
 		end)
@@ -623,11 +645,15 @@ return function()
 			local A = proxy("A")
 			local called = false
 			A.__meta.__le = Meta.__le
+			local B = proxy("B")
+			B.__meta.__le = Meta.__le
+
 			function A:operatorLE()
 				called = true
 			end
+
 			expect(called).to.equal(false)
-			A = A <= A
+			A = A <= B
 			expect(called).to.equal(true)
 		end)
 
@@ -636,10 +662,12 @@ return function()
 			A.__meta.__le = Meta.__le
 			local B = proxy("B")
 			B.__meta.__le = Meta.__le
+
 			function A:operatorLE(other)
 				expect(self).to.equal(A)
 				expect(other).to.equal(B)
 			end
+
 			B.operatorLE = A.operatorLE
 			A = A <= B
 		end)
@@ -649,10 +677,12 @@ return function()
 			A.__meta.__le = Meta.__le
 			local B = proxy("B")
 			B.__meta.__le = Meta.__le
+
 			function A:operatorLE(other)
 				expect(self).to.equal(B)
 				expect(other).to.equal(A)
 			end
+
 			B.operatorLE = A.operatorLE
 			A = B <= A
 		end)

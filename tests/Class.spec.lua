@@ -107,9 +107,17 @@ return function()
 			end).to.throw("Cannot create a class inheriting from parent of type 'thread'.")
 		end)
 
-		it("should error when parent has no '__class' metatable", function()
+		it("should error when parent has no metatable", function()
 			expect(function()
 				Class("Test", {})
+			end).to.throw("Cannot create a class inheriting from an inaccessible class.")
+		end)
+
+		it("should error when parent has no '__class' metatable", function()
+			local A = {}
+			setmetatable(A, {})
+			expect(function()
+				Class("Test", A)
 			end).to.throw("Cannot create a class inheriting from non-class or non-interface.")
 		end)
 
@@ -139,7 +147,7 @@ return function()
 			local B = Class("B")
 			expect(function()
 				Class("C", A, B)
-			end).to.throw("Cannot create a class inheriting from more than one non-interface parent.")
+			end).to.throw("Cannot create a class inheriting from multiple non-interface parents.")
 		end)
 
 		it("should implement interfaces when inheriting a class", function()

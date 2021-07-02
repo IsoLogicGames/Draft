@@ -3,8 +3,8 @@
 return function()
 	local module = game:GetService("ReplicatedStorage").Draft
 	local Interface = require(module.Interface)
-	local Class = require(module.Class)
 	local Meta = require(module.Meta)
+	local Object = require(module.Object)
 
 	describe("Function", function()
 		it("should be a function", function()
@@ -106,16 +106,23 @@ return function()
 			end).to.throw("Cannot create an interface implementing a parent of type 'thread'.")
 		end)
 
-		it("should error when parent has no '__class' metatable", function()
+		it("should error when parent has no metatable", function()
 			expect(function()
 				Interface("Test", {})
+			end).to.throw("Cannot create an interface implementing an inaccessible class.")
+		end)
+
+		it("should error when parent has no '__class' metatable", function()
+			local A = {}
+			setmetatable(A, {})
+			expect(function()
+				Interface("Test", A)
 			end).to.throw("Cannot create an interface implementing a non-interface.")
 		end)
 
 		it("should error when parent is a class", function()
-			local A = Class("A")
 			expect(function()
-				Interface("Test", A)
+				Interface("Test", Object)
 			end).to.throw("Cannot create an interface implementing a class.")
 		end)
 

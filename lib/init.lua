@@ -5,10 +5,29 @@
 -- @release 0.1.0
 -- @license MIT
 
+local Class = require(script.Class)
+local Interface = require(script.Interface)
+local Object = require(script.Object)
+
 local Draft = {}
 local instance
 
 Draft.__index = Draft
+
+--- The @{Class} function.
+--
+-- @see Class
+Draft.Class = Class
+
+--- The @{Interface} function.
+--
+-- @see Interface
+Draft.Interface = Interface
+
+--- The @{Object} function.
+--
+-- @see Object
+Draft.Object = Object
 
 --- Creates the Draft API singleton.
 -- This is called automatically and will only ever create a maximum of one

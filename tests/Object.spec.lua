@@ -1,4 +1,4 @@
---- Tests for the @{Meta} function.
+--- Tests for the @{Object} class.
 
 return function()
 	local module = game:GetService("ReplicatedStorage").Draft
@@ -35,14 +35,14 @@ return function()
 			expect(object.__meta.__class.name).to.equal("Object")
 		end)
 
-		it("should have a class instance of 'Object'", function()
+		it("should have a class parent of 'Object'", function()
 			local object = Object:instance()
-			expect(object.__meta.__class.instance).to.equal(Object)
+			expect(object.__meta.__class.parent).to.equal(Object)
 		end)
 
-		it("should have no class parent", function()
+		it("should have no class instance", function()
 			local object = Object:instance()
-			expect(object.__meta.__class.parent).to.equal(nil)
+			expect(object.__meta.__class.instance).to.equal(nil)
 		end)
 
 		it("should have no class interfaces", function()
@@ -98,10 +98,10 @@ return function()
 			local b = B:instance()
 			expect(function()
 				a:super("Test")
-			end).to.throw("Cannot call super method 'Test' of class 'A'. No method exists in ancestry.")
+			end).to.throw("Cannot call method 'Test' of parent of class 'A'. No method exists in ancestry.")
 			expect(function()
 				b:super("Test")
-			end).to.throw("Cannot call super method 'Test' of class 'B'. No method exists in ancestry.")
+			end).to.throw("Cannot call method 'Test' of parent of class 'B'. No method exists in ancestry.")
 		end)
 
 		it("should call the method of its parent", function()
@@ -113,6 +113,10 @@ return function()
 			end
 
 			local B = Class("B", A)
+
+			function B:Test()
+			end
+
 			local b = B:instance()
 			b:super("Test")
 			expect(called).to.equal(true)
@@ -145,6 +149,10 @@ return function()
 			end
 
 			local B = Class("B", A)
+
+			function B:Test()
+			end
+
 			local C = Class("C", B)
 			local c = C:instance()
 			c:super("Test")
@@ -167,6 +175,10 @@ return function()
 			end
 
 			local C = Class("C", B)
+
+			function C:Test()
+			end
+
 			local c = C:instance()
 			c:super("Test")
 			expect(notCalled).to.equal(false)
@@ -219,16 +231,10 @@ return function()
 			end).to.throw("Cannot cast to class of type 'thread'.")
 		end)
 
-		it("should error when the class is not instantiated", function()
-			expect(function()
-				Object:As("Test")
-			end).to.throw("Cannot cast uninstantiated class 'Object'")
-		end)
-
 		it("should error when the table provided is not a class", function()
 			local object = Object.new()
 			expect(function()
-				object:As("Test")
+				object:As({})
 			end).to.throw("Cannot cast to non-class.")
 		end)
 
@@ -236,7 +242,7 @@ return function()
 			local object = Object.new()
 			expect(function()
 				object:As("Test")
-			end).to.throw("Cannot cast to class 'Test'. 'Test' is not an ancestor of 'Object'.")
+			end).to.throw("Cannot cast to class 'Test'. It is not an ancestor of 'Object'.")
 		end)
 
 		it("should cast to a parent", function()
@@ -264,7 +270,7 @@ return function()
 			local b = B:instance()
 			local a = b:As(A)
 			expect(b:Type()).to.equal(B)
-			expect(a:Type()).to.equal(A)
+			expect(a:IsA(A)).to.equal(true)
 		end)
 
 		it("should cast by name", function()
@@ -316,7 +322,7 @@ return function()
 			expect(called).to.equal(true)
 		end)
 
-		it("should error when calling methods that don't exist in the cast class", function()
+		it("should get nil when accessing members that don't exist in the cast class", function()
 			local A = Class("A")
 			local B = Class("B", A)
 
@@ -325,9 +331,7 @@ return function()
 
 			local b = B:instance()
 			local a = b:As(A)
-			expect(function()
-				a:Test()
-			end).to.throw("No member 'Test' exists in 'A'.")
+			expect(a.Test).never.to.be.ok()
 		end)
 	end)
 
@@ -418,7 +422,7 @@ return function()
 			expect(c:IsA(A)).to.equal(true)
 		end)
 
-		it("should return accept a string", function()
+		it("should accept a string", function()
 			local object = Object.new()
 			expect(object:IsA("Object")).to.equal(true)
 		end)
