@@ -174,8 +174,9 @@ function Object:Equals(other)
 	return eq
 end
 
-function Object:operatorEq(...)
-	return self:Equals(...)
+function Object:operatorEq(other, ...)
+	local eq = self.Equals or other.Equals
+	return eq(self, other, ...)
 end
 
 function Object:IsA(ancestor)
