@@ -96,4 +96,5 @@ local function Class(name, ...)
 	return class
 end
 
+--- @export
 return Class
