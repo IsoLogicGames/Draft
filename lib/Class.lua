@@ -1,6 +1,11 @@
---- The Class function.
+--- Provides the Class function.
 --
 -- @module Class
+-- @usage
+-- local MyInterface = Interface("MyInterface")
+-- local MyClass = Class("MyClass")
+-- local MySubClass = Class("MySubClass", MyClass)
+-- local MyImplementingClass = Class("MyImplementingClass", MyClass, MyInterface)
 
 local module = script.Parent
 local Interface = require(module.Interface)
@@ -12,6 +17,14 @@ local ErrorMeta = "Cannot create a class inheriting from an inaccessible class."
 local ErrorClass = "Cannot create a class inheriting from non-class or non-interface."
 local ErrorMultiple = "Cannot create a class inheriting from multiple non-interface parents."
 
+--- Ensures an object contains a class table.
+-- Raises an error if there is a problem with the provided object.
+--
+-- @param class the object to check for a class table
+-- @raise
+-- * if class is not a table
+-- * if class has no metatable
+-- * if class has no class table
 local function validateClass(class)
 	local typeClass = type(class)
 	if typeClass ~= "table" then
@@ -27,6 +40,15 @@ local function validateClass(class)
 	end
 end
 
+--- Separates a list of mixed classes and interfaces.
+--
+-- @param parents the list of classes and interfaces
+-- @return a list of classes
+-- @return a list of interfaces
+-- @raise
+-- * if a class or interface is not a table
+-- * if a class or interface has no metatable
+-- * if a class or interface has no class table
 local function separate(parents)
 	local classes = {}
 	local interfaces = {}
@@ -41,6 +63,21 @@ local function separate(parents)
 	return classes, interfaces
 end
 
+--- Creates a new class.
+-- If no parent class is given the new class inherits from @{Object}.
+--
+-- @param name the name of the new class
+-- @param[opt] class the parent class
+-- @param[opt] ... any number of implemented @{Interface|interfaces}
+-- @return the new class
+-- @raise
+-- * if the name is not a string
+-- * if a class or interface is not a table
+-- * if a class or interface has no metatable
+-- * if a class or interface has no class table
+-- * if multiple parent classes are given
+-- @see Object
+-- @see Interface
 local function Class(name, ...)
 	local typeName = type(name)
 	if typeName ~= "string" then
