@@ -1,4 +1,4 @@
---- The Interface function.
+--- Provides the Interface function.
 --
 -- @module Interface
 
@@ -12,6 +12,15 @@ local ErrorMeta = "Cannot create an interface implementing an inaccessible class
 local ErrorInterface = "Cannot create an interface implementing a non-interface."
 local ErrorClass = "Cannot create an interface implementing a class."
 
+--- Ensures an object contains a class table and is not a class.
+-- Raises an error if there is a problem with the provided object.
+--
+-- @param interface the object to check for a class table
+-- @raise
+-- * if interface is not a table
+-- * if interface has no metatable
+-- * if interface has no class table
+-- * if interface is a class
 local function validateInterface(interface)
 	local typeInterface = type(interface)
 	if typeInterface ~= "table" then
@@ -30,6 +39,21 @@ local function validateInterface(interface)
 	end
 end
 
+--- Creates a new interface.
+--
+-- @param name the name of the new interface
+-- @param[opt] ... any number of implemented interfaces
+-- @return the new interface
+-- @raise
+-- * if the name is not a string
+-- * if an interface is not a table
+-- * if an interface has no metatable
+-- * if an interface has no class table
+-- * if an interface is a class
+-- @usage
+-- local MyInterface = Interface("MyInterface")
+-- local MySubInterface = Interface("MySubInterface", MyInterface)
+-- @function Interface
 local function Interface(name, ...)
 	local typeName = type(name)
 	if typeName ~= "string" then
