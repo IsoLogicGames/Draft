@@ -24,7 +24,7 @@ Draft.Class = Class
 -- @see Interface
 Draft.Interface = Interface
 
---- The @{Object} function.
+--- The @{Object} class.
 --
 -- @see Object
 Draft.Object = Object
