@@ -1,11 +1,6 @@
 --- Provides the Class function.
 --
 -- @module Class
--- @usage
--- local MyInterface = Interface("MyInterface")
--- local MyClass = Class("MyClass")
--- local MySubClass = Class("MySubClass", MyClass)
--- local MyImplementingClass = Class("MyImplementingClass", MyClass, MyInterface)
 
 local module = script.Parent
 local Interface = require(module.Interface)
@@ -67,8 +62,8 @@ end
 -- If no parent class is given the new class inherits from @{Object}.
 --
 -- @param name the name of the new class
--- @param[opt] class the parent class
--- @param[opt] ... any number of implemented @{Interface|interfaces}
+-- @param[opt] ... up to one parent class and any number of implemented
+-- @{Interface|interfaces}
 -- @return the new class
 -- @raise
 -- * if the name is not a string
@@ -78,6 +73,12 @@ end
 -- * if multiple parent classes are given
 -- @see Object
 -- @see Interface
+-- @usage
+-- local MyInterface = Interface("MyInterface")
+-- local MyClass = Class("MyClass")
+-- local MySubClass = Class("MySubClass", MyClass)
+-- local MyImplementingClass = Class("MyImplementingClass", MyClass, MyInterface)
+-- @function Class
 local function Class(name, ...)
 	local typeName = type(name)
 	if typeName ~= "string" then
@@ -96,5 +97,4 @@ local function Class(name, ...)
 	return class
 end
 
---- @export
 return Class
