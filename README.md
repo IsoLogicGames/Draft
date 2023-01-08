@@ -17,16 +17,21 @@
 </div>
 <br>
 
+> :information_source: This project is not currently in development and has no
+> current plans for development.
+
 **Draft** is a Lua class library targeting
-*[Lemur](https://github.com/LPGhatguy/lemur)* and
-*[Roblox](https://www.roblox.com/)*.
+_[Lemur](https://github.com/LPGhatguy/lemur)_ and
+_[Roblox](https://www.roblox.com/)_.
 
 Draft makes object oriented abstraction easy.
+
 - Build classes effortlessly
 - Create interfaces and abstract classes
 - Remove the complexity of abstraction
 
 ## Installation
+
 To install Draft, use a tool such as [Rojo](https://rojo.space/) to sync
 Draft with your project. Draft is contained within the `lib` directory
 of this project.
@@ -34,6 +39,7 @@ of this project.
 A good place to begin is our [getting started guide](https://isologicgames.github.io/Draft/getting-started/#installation).
 
 ## Documentation
+
 Check the Draft [documentation](https://isologicgames.github.io/Draft/)
 website. Our user guide is coming soon.
 
@@ -41,6 +47,7 @@ Draft has a fully documented [API](https://isologicgames.github.io/Draft/api/)
 as well.
 
 ## Contributing
+
 Contributions are welcome, please make a pull request!
 
 Be sure to set up [Rojo](https://rojo.space/) to [get started](https://isologicgames.github.io/Draft/getting-started/#installation).
@@ -49,5 +56,6 @@ Check out our [contribution guide](CONTRIBUTING.md) for further information.
 Please read our [code of conduct](CODE_OF_CONDUCT.md) when getting involved.
 
 ## License
+
 Draft is free software available under the MIT license. See the
 [license](LICENSE.md) for details.
